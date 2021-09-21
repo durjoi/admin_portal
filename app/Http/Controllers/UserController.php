@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use jeremykenedy\LaravelRoles\Models\Role;
 
 class UserController extends Controller
 {
@@ -22,7 +26,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        $items = User::all();
         
+        return view('users.index', compact('items'));
     }
 
     /**
@@ -32,7 +38,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles = Role::where('level', '<=', Auth::user()->level())->get();
+        return view('users.create', compact('roles'));
     }
 
     /**
@@ -43,7 +50,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            "name" => "required|min:3|string",
+            "email" => "required|email|unique:users,email",
+            "password" => "required|min:6"
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        $user = User::create($validated);
+
+        if(isset($request->role)) {
+            $role = config('roles.models.role')::where('name', '=', $request->role)->first();  //choose the default role upon user creation.
+            $user->attachRole($role);
+        }
+
+        return redirect()->route('users.index');
     }
 
     /**

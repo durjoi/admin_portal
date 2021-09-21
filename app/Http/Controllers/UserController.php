@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Validator;
 use jeremykenedy\LaravelRoles\Models\Role;
 
 class UserController extends Controller
@@ -76,7 +77,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $item = User::find($id);
+        $roles = Role::all();
+
+        return view('users.view', compact('item', 'roles'));
     }
 
     /**
@@ -87,7 +91,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $item = User::find($id);
+        $roles = Role::where('level', '<=', Auth::user()->level())->get();
+
+        return view('users.edit', compact('item', 'roles'));
+        
     }
 
     /**
@@ -99,7 +107,35 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //  Return response
+        $validated = Validator::make($request->all(), [
+            "name" => "min:3|string",
+            "email" => "email|unique:users,email," . $id,
+        ]);
+
+        if ($validated->passes()) {
+            $user = User::find($id);
+
+            $updateData = [
+                "name" => $request->name,
+                "email" => $request->email,
+            ];
+
+            if(isset($request['password'])) {
+                $request->password = Hash::make($request->password);
+
+                $updateData['password'] = $request->password;
+            }
+            $user->update($updateData);
+
+            $user->detachAllRoles();
+            if(isset($request->role)) {
+                $role = config('roles.models.role')::where('name', '=', $request->role)->first();  //choose the default role upon user creation.
+                $user->attachRole($role);
+            }
+        }
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -110,6 +146,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id)->delete();
+
+        return redirect()->route('users.index');
     }
 }

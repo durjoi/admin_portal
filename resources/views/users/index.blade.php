@@ -3,8 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Users') }}
         </h2>
-
+        @permission('create.users')
         <button><a href="{{ route('users.create') }}">Add New</a></button>
+        @endpermission
     </x-slot>
 
     <div class="py-12">
@@ -30,17 +31,24 @@
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->roles()->first()->name }}</td>
                                 <td class="d-flex">
+                                    @permission('view.users')
                                     <button class="mx-2">
-                                        <a href=""><i class="far fa-eye"></i></a>
+                                        <a href="{{ route('users.show', $item->id) }}"><i class="far fa-eye"></i></a>
                                     </button>
+                                    @endpermission
+
+                                    @permission('edit.users')
                                     <button class="mx-2">
-                                        <a href=""><i class="fas fa-edit"></i></a>
+                                        <a href="{{ route('users.edit', $item->id) }}"><i class="fas fa-edit"></i></a>
                                     </button>
-                                    <form action="{{ route('users.destroy', $item->id) }}" class="mx-2">
+                                    @endpermission
+                                    @permission('delete.users')
+                                    <form action="{{ route('users.destroy', $item->id) }}" method="POST" class="mx-2">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"><i class="far fa-trash-alt"></i></button>
                                     </form>
+                                    @endpermission
                                 </td>
                               </tr>
                             @endforeach

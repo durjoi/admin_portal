@@ -66,7 +66,7 @@ class UserController extends Controller
             $user->attachRole($role);
         }
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('success','User created successfully!');
     }
 
     /**
@@ -114,12 +114,6 @@ class UserController extends Controller
             "password" => "nullable|min:6"
         ]);
 
-        //  Return response
-        // $validated = Validator::make($request->all(), [
-        //     "name" => "min:3|string",
-        //     "email" => "email|unique:users,email," . $id,
-        // ]);
-
         $user = User::find($id);
 
         $updateData = [
@@ -140,7 +134,7 @@ class UserController extends Controller
             $user->attachRole($role);
         }
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('success','User updated successfully!');;;
     }
 
     /**
@@ -153,6 +147,6 @@ class UserController extends Controller
     {
         $user = User::find($id)->delete();
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('success','User deleted successfully!');
     }
 }

@@ -29,13 +29,18 @@
                 </div>
             </header>
 
+            <div class="max-w-7xl mx-auto pt-3 pb-1 px-4 sm:px-6 lg:px-8">
+                @include('layouts.flash-message')
+            </div>
+
+            
             <!-- Page Content -->
             <main>
                 {{ $slot }}
             </main>
         </div>
 
-        {{-- Bootstrap 5 Script --}}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>        {{-- Bootstrap 5 Script --}}
         <script src="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         {{-- FontAwesome --}}
         <script src="https://kit.fontawesome.com/6102fe17e4.js" crossorigin="anonymous"></script>

@@ -174,6 +174,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        // Role based access control
+        jeremykenedy\LaravelRoles\RolesServiceProvider::class,
 
     ],
 
